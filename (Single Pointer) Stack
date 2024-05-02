@@ -1,0 +1,84 @@
+#ifndef STACK_HPP
+#define STACK_HPP
+
+template<typename T>
+class Node {
+public:
+    Node();
+    Node(T&);
+private:
+    T * data;
+    Node<T> * next;
+};
+
+
+template<typename T>
+class Stack{
+public:
+    Stack();
+    Stack(const Stack<T>&);
+    ~Stack();
+
+    bool empty();
+    bool full();
+
+    Stack<T>&operator=(const Stack<T>);
+
+    T top();
+    void push(const T&);
+    T pop();
+    
+private:
+    Node<T> * tos;
+};
+
+template<typename T>
+Node<T>::Node(){
+    data = 0;
+    next = nullptr;
+}
+
+template<typename T>
+Node<T>::Node(T&input){
+    data = input;
+    next = nullptr;
+}
+
+template<typename T>
+void Stack<T>::push(const T& input){
+    Node<T> * temp = tos;
+    tos = new Node<T>(input);
+    tos->next = temp;
+}
+
+template<typename T>
+Stack<T>::Stack(){
+    tos = nullptr;
+}
+
+template<typename T>
+Stack<T>::Stack(const Stack<T>&input):Stack(){
+    Node<T> * current = input.tos;
+    Node<T>*bottom;
+    while(current){
+        if(tos == nullptr){
+            tos = new Node<T>(current->data);
+            bottom = tos;
+        }else{
+            bottom->next = new Node<T>(current->data);
+            bottom = bottom->next;
+        }
+        current = input.tos->next;
+    }
+}
+
+template<typename T>
+T Stack<T>::pop(){
+    Node<T>*temp = tos;
+    tos = tos->next;
+    T value = temp->data;
+    delete temp;
+    return value;
+}
+
+#endif
