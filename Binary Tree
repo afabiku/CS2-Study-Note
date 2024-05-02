@@ -1,0 +1,154 @@
+#ifndef TREE_HPP
+#define TREE_HPP
+#include <iostream>
+
+template<typename T>
+class node{
+public:
+    node();
+    node(const T&);
+    node(const node<T>&);
+
+    void push(const T&);
+
+    void preorder();
+    void inorder();
+    void postorder();
+private:
+    T data;
+    node<T>*left;
+    node<T>*right;
+};
+
+template<typename T>
+class tree{
+public:
+    tree();
+    tree(const tree<T>&);
+
+    void preorder();
+    void inorder();
+    void postorder();
+
+    void push(const T&);
+private:
+    node<T> * root;
+};
+
+template<typename T>
+void tree<T>::postorder(){
+    if(root){
+        root->postorder();
+    }
+}
+
+template<typename T>
+void node<T>::postorder(){
+    if(left){
+        left->postorder();
+    }
+    if(right){
+        right->postorder();
+    }
+    std::cout << data << std::endl;
+
+}
+
+template<typename T>
+void tree<T>::inorder(){
+    if(root){
+        root->inorder();
+    }
+}
+
+template<typename T>
+void node<T>::inorder(){
+    if(left){
+        left->inorder();
+    }
+    std::cout << data << std::endl;
+    if(right){
+        right->inorder();
+    }
+}
+
+
+
+template<typename T>
+void tree<T>::preorder(){
+    if(root){
+        root->preorder();
+    }
+}
+
+template<typename T>
+void node<T>::preorder(){
+    std::cout << data << " ";
+    if(left)
+        left->preorder();
+    if(right)
+        right->preorder();
+}
+
+template<typename T>
+tree<T>::tree(const tree<T>&input){
+    root = new node<T>(*(input->root));
+}
+
+template<typename T>
+node<T>::node(const node<T>&input){
+    data = input.data;
+    if(input->left)
+        left = new node<T>(*(input.left));
+    if(input->right)
+        right = new node<T>(*(input.right));
+}
+
+template<typename T>
+node<T>::node(){
+    data = 0;
+    left = nullptr;
+    right = nullptr;
+}
+
+template<typename T>
+node<T>::node(const T&input){
+    data = input;
+    left = nullptr;
+    right = nullptr;
+}
+
+template<typename T>
+tree<T>::tree(){
+    root = nullptr;
+}
+
+template<typename T>
+void tree<T>::push(const T&input){
+    if(root == nullptr){
+        root = new node<T>(input);
+    }else{
+        root->push(input);
+    }
+}
+
+
+template<typename T>
+void node<T>::push(const T&input){
+    if(input < data){
+        if(left){
+            left->push(input);
+        }else{
+            left = new node<T>(input);
+        }
+    }
+    else if(input > data){
+        if(right){
+            right->push(input);
+        }
+        else{
+            right = new node<T>(input);
+        }
+    }
+}
+#endif
