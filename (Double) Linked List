@@ -1,0 +1,105 @@
+#ifndef STACK_HPP   
+#define STACK_HPP
+#include <iostream>
+#include <cassert>
+
+template<typename T>
+class node{
+public:
+    node();
+    node(const T&);
+
+    T data;
+    node<T>*next;
+    node<T>*previous;
+};
+
+template <typename T>
+class stack {
+public:
+    stack();
+    stack(const stack<T>&);
+    
+    void push(const T&);
+    T top();
+    T pop();
+
+    bool empty();
+private:
+    node<T> * tos;
+};
+
+template<typename T>
+node<T>::node(){
+    data = 0;
+    next = nullptr;
+    previous = nullptr;
+}
+
+template<typename T>
+node<T>::node(const T& input){
+    data = input;
+    next = nullptr;
+    previous = nullptr;
+}
+
+template<typename T>
+stack<T>::stack(){
+    tos = nullptr;
+}
+
+template<typename T>
+bool stack<T>::empty(){
+    return (tos == nullptr);
+}
+
+template<typename T>
+T stack<T>::pop(){
+    assert(!empty());
+    node<T>*temp = tos;
+    T value = tos->data;
+    // std::cout <<  tos->previous<< std::endl;
+    if(tos->previous){
+        tos = tos->previous;
+        tos->next = nullptr;
+    }
+    else{
+        tos = nullptr;
+    }
+    delete temp;
+    return value;
+}
+
+template<typename T>
+void stack<T>::push(const T& input){
+    if(tos){
+        node<T> * temp = tos;
+        tos = new node<T>(input);
+        temp->next = tos;
+        tos->previous = temp;
+    }else{
+        tos = new node<T>(input);
+    }
+}
+
+template<typename T>
+stack<T>::stack(const stack<T>&input){
+    tos = nullptr;
+    node<T> * current = input.tos;
+    node<T> * bottom;
+    while(current){
+        if(tos == nullptr){
+            tos = new node<T>(current->data);
+            tos->previous = nullptr;
+            bottom = tos;
+        }else{
+            node<T>*temp = new node<T>(current->data);
+            bottom->next = temp;
+            temp->previous = bottom;
+            bottom = temp;
+        }
+        current = current->next;
+    }
+}
+
+#endif
